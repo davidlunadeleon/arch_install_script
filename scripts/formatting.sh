@@ -1,27 +1,107 @@
 #!/usr/bin/bash
 
 ###############################################################################
-# Format all partitions with the appropriate file system. In the case of btfs,
-# create the file system merging the different drives and the partition 3 in
-# main drive.
+# Format all partitions with the appropriate file system.
 ###############################################################################
 
-echo Formatting /efi partition...
+echo "
+############################################################
+#
+# Formatting /efi partition...
+#
+############################################################
+"
+
 mkfs.fat -F32 ${AIS_MAIN_DRIVE}1
-echo Done formatting /efi partition
 
-echo Formatting swap partition...
-mkswap /dev/mapper/swap
-echo Done formatting swap partition
+echo "
+############################################################
+#
+# Done formatting /efi partition
+#
+############################################################
+"
 
-echo Formatting root partition...
+echo "
+############################################################
+#
+# Formatting boot partition...
+#
+############################################################
+"
+
+mkfs.ext2 /dev/mapper/crypto-boot
+
+echo "
+############################################################
+#
+# Done formatting boot partition
+#
+############################################################
+"
+
+echo "
+############################################################
+#
+# Init LVM physical volumes and create main volume group...
+#
+############################################################
+"
+
+P_VOLUMES="/dev/mapper/crypto-system0"
+pvcreate $P_VOLUMES
 IFS=';' read -ra ais_mapped_names <<< "$AIS_MAPPED_NAMES"
-if (( ${#ais_mapped_names[@]} == 0)); then
-	mkfs.btrfs -L root /dev/mapper/root
-else
-	for ((i = 0; i < ${#ais_mapped_names[@]}; ++i)); do
-		ais_mapped_names[$i]="/dev/mapper/${ais_mapped_names[$i]}"
-	done
-	mkfs.btrfs -L root -d single -m raid1 /dev/mapper/root $ais_mapped_names
-fi
-echo Done formatting root partition
+for ((i = 0; i < ${#ais_mapped_names[@]}; ++i)); do
+	VOL_NAME="/dev/mapper/${ais_mapped_names[$i]}"
+	pvcreate $VOL_NAME
+	P_VOLUMES="$P_VOLUMES $VOL_NAME"
+done
+vgcreate main $P_VOLUMES
+
+echo "
+############################################################
+#
+# Done initializing LVM PVs and creating main VG
+#
+############################################################
+"
+
+echo "
+############################################################
+#
+# Creating LVM logical volumes...
+#
+############################################################
+"
+
+lvcreate -L $AIS_SWAP_SIZE main -n swap
+lvcreate -L $AIS_ROOT_SIZE main -n root
+lvcreate -l 100%FREE main -n home
+
+echo "
+############################################################
+#
+# Done creating the logical subvolumes swap, root, and home
+#
+############################################################
+"
+
+echo "
+############################################################
+#
+# Formatting logical volumes...
+#
+############################################################
+"
+
+mkfs.ext4 /dev/mapper/main-root
+mkfs.ext4 /dev/mapper/main-home
+mkswap /dev/mapper/main-swap
+
+echo "
+############################################################
+#
+# Done formatting logical volumes...
+#
+############################################################
+"
