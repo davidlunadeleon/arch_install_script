@@ -36,3 +36,5 @@ export AIS_USERNAME=user
 export AIS_MICROCODE=
 # Either intel, nvidia, nouveau, or amd
 export AIS_GRAPHICS_DRIVERS=
+export AIS_DOTFILES_REPO=https://github.com/davidlunadeleon/.dotfiles.git
+export AIS_NEOVIM_REPO=https://github.com/davidlunadeleon/neovim-config.git
