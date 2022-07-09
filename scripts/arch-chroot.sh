@@ -65,7 +65,7 @@ pacman -Sy --noconfirm xorg i3 dmenu rofi polybar arandr feh \
 	lightdm lightdm-webkit2-greeter lightdm-webkit-theme-litarvan \
 	tmux
 sed -i "s/#greeter-session=.*/greeter-session=lightdm-webkit2-greeter/" /etc/lightdm/lightdm.conf
-sed -i "s/webkit_theme=.*/webkit_theme	= litarvan/" /etc/lightdm/lightdm-webkit2-greeter.conf
+sed -i "s/webkit_theme.*=.*/webkit_theme	= litarvan/" /etc/lightdm/lightdm-webkit2-greeter.conf
 
 echo "
 ############################################################
