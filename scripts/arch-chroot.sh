@@ -42,7 +42,7 @@ echo "
 ############################################################
 "
 
-pacman -Sy --noconfirm pipewire pipewire-alsa pipewire-pulse
+pacman -Sy --noconfirm pipewire pipewire-alsa pipewire-pulse pavucontrol easyeffects
 
 echo "
 ############################################################
@@ -144,7 +144,8 @@ echo "
 "
 
 PACKAGES="git zsh vim firefox kitty neovim ranger chezmoi \
-	openssh playerctl"
+	openssh playerctl htop thunar thunar-archive-plugin \
+	thunar-media-tags-plugin thunar-volman skanlite cups cups-pdf mpv"
 
 if [ -n "$AIS_NETWORK_SSID" ]; then
 	PACKAGES="$PACKAGES iwd"
@@ -381,6 +382,7 @@ echo "
 "
 
 systemctl enable lightdm.service
+systemctl enable cups.service
 systemctl enable sshd.service
 systemctl enable systemd-networkd.service
 systemctl enable systemd-resolved.service
