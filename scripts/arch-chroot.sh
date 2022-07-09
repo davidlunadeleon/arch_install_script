@@ -335,6 +335,8 @@ su $AIS_USERNAME <<EOSU
 	cd ~
 	mkdir .ssh
 	touch .ssh/environment-${AIS_HOSTNAME}
+	echo "~/.fehbg &" >> .xinitrc
+	echo "/home/${AIS_USERNAME}/.screenlayout/default.sh" >> .xprofile
 EOSU
 
 # Neovim
@@ -356,7 +358,7 @@ sudo -u $AIS_USERNAME paru -S --noconfirm nvm
 sudo -u $AIS_USERNAME paru -S --noconfirm adobe-source-han-sans-otc-fonts adobe-source-serif-otc-fonts ttf-cascadia-code nerd-fonts-complete noto-fonts-emoji
 
 # Themes
-sudo -u $AIS_USERNAME paru -S --noconfirm gtk3 gnome-themes-extra adwaita-qt5 adwaita-qt6 qt5ct lxappearance-gtk3 nordic-darker-theme nordic-theme papirus-folders-nordic kvantum
+sudo -u $AIS_USERNAME paru -S --noconfirm gtk3 gnome-themes-extra adwaita-qt5 adwaita-qt6 qt5ct lxappearance-gtk3 nordic-darker-theme nordic-theme papirus-folders-nordic kvantum kvantum-theme-nordic-git
 
 echo "QT_QPA_PLATFORMTHEME=qt5ct" >> /etc/environment
 
